@@ -14,6 +14,7 @@ public:
 	void start_periodic(int interval_ms);
 	void set_timeout_callback(std::function<void(void)> callback);
 
+protected:
 	void pollin_event();
 
 private:

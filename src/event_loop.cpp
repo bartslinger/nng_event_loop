@@ -14,6 +14,7 @@ void EventLoop::run()
 
 	for (ssize_t i = 0; i < len; i++) {
 		fds[i].fd = _event_sources.at(i)->fd();
+		std::cout << "fd: " << fds[i].fd << std::endl;
 		fds[i].events = POLLIN;
 		fds[i].revents = 0;
 	}

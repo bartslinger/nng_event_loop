@@ -1,0 +1,4 @@
+#ifndef PUBLISHER_HPP
+#define PUBLISHER_HPP
+
+#endif // PUBLISHER_HPP
