@@ -6,6 +6,7 @@
 #include "nng_event_loop/publisher.hpp"
 #include "nng_event_loop/replier.hpp"
 #include "nng_event_loop/requester.hpp"
+#include "nng_event_loop/udp_source.hpp"
 
 using namespace std::placeholders;
 
@@ -16,7 +17,8 @@ public:
 		sub(this),
 		pub("ipc:///tmp/testsocket"),
 		replier(this),
-		requester(this, "ipc:///tmp/repliersocket")
+		requester(this, "ipc:///tmp/repliersocket"),
+		udp_source(this)
 	{
 
 	}
@@ -33,6 +35,10 @@ public:
 
 		std::string request = "Requestion on timer";
 		requester.request(request);
+
+		std::cout << "Send heartbeat" << std::endl;
+		std::string hb = "HB";
+		udp_source.send_packet(hb);
 	}
 
 	void sub_callback(std::string message) {
@@ -46,6 +52,10 @@ public:
 
 	void requester_callback(std::string reply) {
 		std::cout << "Requester received: " << reply << std::endl;
+	}
+
+	void udp_callback(std::string) {
+		std::cout << "UDP callback" << std::endl;
 	}
 
 	int init()
@@ -64,6 +74,9 @@ public:
 
 		requester.set_receive_callback(std::bind(&TestNode::requester_callback, this, _1));
 
+		udp_source.set_receive_callback(std::bind(&TestNode::udp_callback, this, _1));
+		udp_source.connect("127.0.0.1", 14557, 14551);
+
 		return 0;
 	}
 
@@ -73,6 +86,7 @@ private:
 	Publisher pub;
 	Replier replier;
 	Requester requester;
+	UdpSource udp_source;
 };
 
 int main(int argc, char* argv[])

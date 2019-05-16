@@ -18,7 +18,6 @@ public:
 	int subscribe(std::string url);
 	void set_receive_callback(std::function<void(std::string)> callback);
 
-
 protected:
 	void pollin_event();
 
