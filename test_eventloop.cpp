@@ -3,12 +3,14 @@
 #include "nng_event_loop/event_loop.hpp"
 #include "nng_event_loop/timer.hpp"
 #include "nng_event_loop/subscriber.hpp"
+#include "nng_event_loop/publisher.hpp"
 
 class TestNode : public EventLoop {
 public:
 	TestNode() :
 		timer(this),
-		sub(this)
+		sub(this),
+		pub("ipc:///tmp/testsocket")
 	{
 
 	}
@@ -20,6 +22,8 @@ public:
 
 	void on_timeout() {
 		std::cout << "timeout callback" << std::endl;
+		std::string message = "Publishing on timer";
+		pub.publish(message);
 	}
 
 	void sub_callback(std::string message) {
@@ -43,6 +47,7 @@ public:
 private:
 	Timer timer;
 	Subscriber sub;
+	Publisher pub;
 };
 
 int main(int argc, char* argv[])
