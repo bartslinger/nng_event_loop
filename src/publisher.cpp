@@ -6,11 +6,11 @@ Publisher::Publisher(std::string url)
 	int rv;
 	// start the publisher
 	if ((rv = nng_pub0_open(&_socket)) != 0) {
-		std::cerr << "[publisher] nng_pub0_open"<< nng_strerror(rv) << std::endl;
+		std::cerr << "[publisher] nng_pub0_open" << nng_strerror(rv) << std::endl;
 	}
 
 	if ((rv = nng_listen(_socket, url.c_str(), NULL, NNG_FLAG_NONBLOCK)) != 0) {
-		std::cerr << "[publisher] nng_listen"<< nng_strerror(rv) << std::endl;
+		std::cerr << "[publisher] nng_listen" << nng_strerror(rv) << std::endl;
 	}
 }
 

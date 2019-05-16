@@ -1,7 +1,8 @@
 #include <iostream>
 #include "event_source.hpp"
 
-EventSource::EventSource()
+EventSource::EventSource() :
+	_fd(-1)
 {
 
 }

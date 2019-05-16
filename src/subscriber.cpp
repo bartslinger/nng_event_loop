@@ -1,6 +1,7 @@
 #include "subscriber.hpp"
 
-Subscriber::Subscriber(EventLoop *loop)
+Subscriber::Subscriber(EventLoop *loop) :
+	_callback(nullptr)
 {
 	loop->add_event_source(this);
 }
@@ -17,33 +18,33 @@ int Subscriber::subscribe(std::string url)
 	int rv;
 
 	if ((rv = nng_sub0_open(&_socket)) != 0) {
-		std::cerr << "[subscription] nng_sub0_open"<< nng_strerror(rv) << std::endl;
+		std::cerr << "[subscription] nng_sub0_open" << nng_strerror(rv) << std::endl;
 		return 1;
 	}
 
 	if ((rv = nng_setopt(_socket, NNG_OPT_SUB_SUBSCRIBE, "", 0)) != 0) {
-		std::cerr << "[subscription] nng_setopt"<< nng_strerror(rv) << std::endl;
+		std::cerr << "[subscription] nng_setopt" << nng_strerror(rv) << std::endl;
 		return 1;
 	}
 
 	if ((rv = nng_dial(_socket, _url.c_str(), NULL, NNG_FLAG_NONBLOCK))) {
-		std::cerr << "[subscription] nng_dial"<< nng_strerror(rv) << std::endl;
+		std::cerr << "[subscription] nng_dial" << nng_strerror(rv) << std::endl;
 		return 1;
 	}
 
 	// Set re-connect time to 500ms, helps when starting subscriber first
 	if ((rv = nng_setopt_ms(_socket, NNG_OPT_RECONNMINT, 500)) != 0) {
-		std::cerr << "[subscription] nng_setopt_ms"<< nng_strerror(rv) << std::endl;
+		std::cerr << "[subscription] nng_setopt_ms" << nng_strerror(rv) << std::endl;
 		return 1;
 	}
 
 	if ((rv = nng_setopt_ms(_socket, NNG_OPT_RECONNMAXT, 0)) != 0) {
-		std::cerr << "[subscription] nng_setopt_ms"<< nng_strerror(rv) << std::endl;
+		std::cerr << "[subscription] nng_setopt_ms" << nng_strerror(rv) << std::endl;
 		return 1;
 	}
 
 	if ((rv = nng_getopt_int(_socket, NNG_OPT_RECVFD, &_fd))) {
-		std::cerr << "[subscription] nng_getopt"<< nng_strerror(rv) << std::endl;
+		std::cerr << "[subscription] nng_getopt" << nng_strerror(rv) << std::endl;
 		return 1;
 	}
 
