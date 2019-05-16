@@ -1,5 +1,5 @@
-#ifndef LISTENER_HPP
-#define LISTENER_HPP
+#ifndef REPLIER_HPP
+#define REPLIER_HPP
 
 #include <iostream>
 #include <functional>
@@ -10,10 +10,10 @@
 #include "event_loop.hpp"
 #include "event_source.hpp"
 
-class Listener : public EventSource {
+class Replier : public EventSource {
 public:
-	Listener(EventLoop* loop);
-	~Listener();
+	Replier(EventLoop* loop);
+	~Replier();
 
 	int listen(std::string url);
 	void set_receive_callback(std::function<void(std::string, std::string&)> callback);
@@ -29,4 +29,4 @@ private:
 	std::function<void(std::string, std::string&)> _callback;
 };
 
-#endif // LISTENER_HPP
+#endif // REPLIER_HPP

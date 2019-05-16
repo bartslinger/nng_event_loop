@@ -4,7 +4,7 @@
 #include "nng_event_loop/timer.hpp"
 #include "nng_event_loop/subscriber.hpp"
 #include "nng_event_loop/publisher.hpp"
-#include "nng_event_loop/listener.hpp"
+#include "nng_event_loop/replier.hpp"
 
 using namespace std::placeholders;
 
@@ -14,7 +14,7 @@ public:
 		timer(this),
 		sub(this),
 		pub("ipc:///tmp/testsocket"),
-		listener(this)
+		replier(this)
 	{
 
 	}
@@ -34,8 +34,8 @@ public:
 		std::cout << "received: " << message << std::endl;
 	}
 
-	void listener_callback(std::string message, std::string &reply) {
-		std::cout << "Listener received: " << message << std::endl;
+	void replier_callback(std::string message, std::string &reply) {
+		std::cout << "Replier received: " << message << std::endl;
 		reply = "request was received!";
 	}
 
@@ -50,8 +50,8 @@ public:
 		sub.set_receive_callback(std::bind(&TestNode::sub_callback, this, _1));
 		sub.subscribe("ipc:///tmp/testsocket");
 
-		listener.set_receive_callback(std::bind(&TestNode::listener_callback, this, _1, _2));
-		listener.listen("ipc:///tmp/listenersocket");
+		replier.set_receive_callback(std::bind(&TestNode::replier_callback, this, _1, _2));
+		replier.listen("ipc:///tmp/repliersocket");
 
 		return 0;
 	}
@@ -60,7 +60,7 @@ private:
 	Timer timer;
 	Subscriber sub;
 	Publisher pub;
-	Listener listener;
+	Replier replier;
 };
 
 int main(int argc, char* argv[])
