@@ -11,7 +11,9 @@ public:
 	Timer(EventLoop* loop);
 	~Timer();
 
-	void start_periodic(int interval_ms);
+	int start_periodic(int interval_ms);
+	int start_single_shot(int time_ms);
+	int stop();
 	void set_timeout_callback(std::function<void(void)> callback);
 
 protected:
@@ -19,6 +21,7 @@ protected:
 
 private:
 	std::function<void(void)> _callback = nullptr;
+	bool _running;
 };
 
 #endif // TIMER_HPP
