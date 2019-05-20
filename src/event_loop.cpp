@@ -1,6 +1,16 @@
 #include <poll.h>
 #include <iostream>
+#include <csignal>
 #include "event_loop.hpp"
+
+namespace {
+	volatile std::sig_atomic_t gSignalStatus;
+}
+
+void signal_handler(int signum)
+{
+	gSignalStatus = signum;
+}
 
 EventLoop::EventLoop()
 {
@@ -9,6 +19,9 @@ EventLoop::EventLoop()
 
 void EventLoop::run()
 {
+	std::signal(SIGINT, signal_handler);
+	std::signal(SIGTERM, signal_handler);
+
 	int len = _event_sources.size();
 	struct pollfd fds[len];
 
@@ -22,6 +35,11 @@ void EventLoop::run()
 	while (true) {
 
 		int ret = poll(fds, len, 2000);
+
+		if (gSignalStatus != 0) {
+			std::cout << "Ending event loop" << std::endl;
+			break;
+		}
 
 		if (ret == 0) {
 			std::cout << "No event for 2000ms" << std::endl;
