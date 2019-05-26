@@ -38,7 +38,7 @@ int Subscriber::subscribe(std::string url)
 		return 1;
 	}
 
-	if ((rv = nng_setopt_ms(_socket, NNG_OPT_RECONNMAXT, 0)) != 0) {
+	if ((rv = nng_setopt_ms(_socket, NNG_OPT_RECONNMAXT, 500)) != 0) {
 		std::cerr << "[subscription] nng_setopt_ms" << nng_strerror(rv) << std::endl;
 		return 1;
 	}

@@ -38,3 +38,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 
 add_executable("test_eventloop" test_eventloop.cpp)
 target_link_libraries(test_eventloop nng_event_loop)
+
+
+add_executable(test_publisher test_publisher.cpp)
+target_link_libraries(test_publisher nng_event_loop)

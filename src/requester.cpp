@@ -27,7 +27,7 @@ Requester::Requester(EventLoop *loop, std::string url) :
 		std::cerr << "[requester] nng_dialer_setopt_ms: " << nng_strerror(rv) << std::endl;
 	}
 
-	if ((rv = nng_dialer_setopt_ms(_dialer, NNG_OPT_RECONNMAXT, 0)) != 0) {
+	if ((rv = nng_dialer_setopt_ms(_dialer, NNG_OPT_RECONNMAXT, 500)) != 0) {
 		std::cerr << "[requester] nng_dialer_setopt_ms: " << nng_strerror(rv) << std::endl;
 	}
 

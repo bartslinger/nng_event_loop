@@ -18,7 +18,8 @@ public:
 		pub("ipc:///tmp/testsocket"),
 		replier(this),
 		requester(this, "ipc:///tmp/repliersocket"),
-		udp_source(this)
+		udp_source(this),
+		testsub(this)
 	{
 
 	}
@@ -29,6 +30,7 @@ public:
 	}
 
 	void on_timeout() {
+//		return;
 		std::cout << "timeout callback" << std::endl;
 		std::string message = "Publishing on timer";
 		pub.publish(message);
@@ -58,6 +60,10 @@ public:
 		std::cout << "UDP callback" << std::endl;
 	}
 
+	void testsub_callback(std::string data) {
+		std::cout << data << std::endl;
+	}
+
 	int init()
 	{
 		std::cout << "Node init" << std::endl;
@@ -77,6 +83,9 @@ public:
 		udp_source.set_receive_callback(std::bind(&TestNode::udp_callback, this, _1));
 		udp_source.connect("127.0.0.1", 14557, 14551);
 
+		testsub.set_receive_callback(std::bind(&TestNode::testsub_callback, this, _1));
+		testsub.subscribe("tcp://127.0.0.1:12345");
+
 		return 0;
 	}
 
@@ -87,6 +96,8 @@ private:
 	Replier replier;
 	Requester requester;
 	UdpSource udp_source;
+
+	Subscriber testsub;
 };
 
 int main(int argc, char* argv[])
