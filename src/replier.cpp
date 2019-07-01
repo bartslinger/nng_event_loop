@@ -35,7 +35,7 @@ int Replier::listen(std::string url)
 	return 0;
 }
 
-void Replier::set_receive_callback(std::function<void (std::string, std::string &)> callback)
+void Replier::set_receive_callback(std::function<void(const std::vector<char>, std::vector<char> &)> callback)
 {
 	_callback = callback;
 }
@@ -44,12 +44,14 @@ void Replier::pollin_event()
 {
 	nng_msg *msg;
 	nng_recvmsg(_socket, &msg, 0);
-	std::string message((char*)nng_msg_body(msg), (char*)nng_msg_body(msg) + nng_msg_len(msg));
+
+	std::vector<char> message((char*)nng_msg_body(msg), (char*)nng_msg_body(msg) + nng_msg_len(msg));
 
 	// free the message
 	nng_msg_free(msg);
 
-	std::string reply = "NOTOK";
+	std::string reply_string = "NOTOK";
+	std::vector<char> reply(reply_string.begin(), reply_string.end());
 
 	if (_callback == nullptr) {
 		std::cerr << "No callback defined!" << std::endl;
@@ -58,7 +60,7 @@ void Replier::pollin_event()
 	}
 
 	// send response
-	nng_msg_alloc(&msg, reply.length());
-	memcpy(nng_msg_body(msg), reply.c_str(), reply.length());
+	nng_msg_alloc(&msg, reply.size());
+	memcpy(nng_msg_body(msg), reply.data(), reply.size());
 	nng_sendmsg(_socket, msg, 0);
 }

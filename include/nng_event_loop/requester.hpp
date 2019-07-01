@@ -15,8 +15,10 @@ public:
 	Requester(EventLoop* loop, std::string url);
 	~Requester();
 
-	void request(std::string &request);
-	void set_receive_callback(std::function<void(std::string)> callback);
+	void request(const char* message, uint16_t len);
+	void request(const std::vector<char> &message);
+	void request(std::string &message);
+	void set_receive_callback(std::function<void(const std::vector<char>)> callback);
 
 protected:
 	void pollin_event();
@@ -26,7 +28,7 @@ private:
 	nng_socket _socket;
 	std::string _url;
 
-	std::function<void(std::string)> _callback;
+	std::function<void(const std::vector<char>)> _callback;
 
 	bool _request_busy;
 

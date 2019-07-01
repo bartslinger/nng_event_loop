@@ -33,7 +33,7 @@ public:
 //		return;
 		std::cout << "timeout callback" << std::endl;
 		std::string message = "Publishing on timer";
-		pub.publish(message);
+		pub.publish(message.c_str(), message.length());
 
 		std::string request = "Requestion on timer";
 		requester.request(request);
@@ -43,25 +43,30 @@ public:
 		udp_source.send_packet(hb);
 	}
 
-	void sub_callback(std::string message) {
-		std::cout << "Subscriber received: " << message << std::endl;
+	void sub_callback(const std::vector<char> message) {
+		std::string received_string(message.data(), message.size());
+		std::cout << "Subscriber received: " << received_string << std::endl;
 	}
 
-	void replier_callback(std::string message, std::string &reply) {
-		std::cout << "Replier received: " << message << std::endl;
-		reply = "request was received!";
+	void replier_callback(const std::vector<char> message, std::vector<char> &reply) {
+		std::string received_string(message.data(), message.size());
+		std::cout << "Replier received: " << received_string << std::endl;
+		std::string reply_string = "request was received!";
+		reply.assign(reply_string.begin(), reply_string.end());
 	}
 
-	void requester_callback(std::string reply) {
-		std::cout << "Requester received: " << reply << std::endl;
+	void requester_callback(const std::vector<char> reply) {
+		std::string received_string(reply.data(), reply.size());
+		std::cout << "Requester received: " << received_string << std::endl;
 	}
 
-	void udp_callback(std::string) {
+	void udp_callback(const std::vector<char> message) {
 		std::cout << "UDP callback" << std::endl;
 	}
 
-	void testsub_callback(std::string data) {
-		std::cout << data << std::endl;
+	void testsub_callback(const std::vector<char> message) {
+		std::string received_string(message.data(), message.size());
+		std::cout << received_string << std::endl;
 	}
 
 	int init()

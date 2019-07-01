@@ -16,7 +16,7 @@ public:
 	~Subscriber();
 
 	int subscribe(std::string url);
-	void set_receive_callback(std::function<void(std::string)> callback);
+	void set_receive_callback(std::function<void(const std::vector<char>)> callback);
 
 protected:
 	void pollin_event();
@@ -25,7 +25,7 @@ private:
 	nng_socket _socket;
 	std::string _url;
 
-	std::function<void(std::string)> _callback;
+	std::function<void(const std::vector<char>)> _callback;
 };
 
 #endif // SUBSCRIBER_HPP

@@ -16,7 +16,7 @@ public:
 	~Replier();
 
 	int listen(std::string url);
-	void set_receive_callback(std::function<void(std::string, std::string&)> callback);
+	void set_receive_callback(std::function<void(const std::vector<char>, std::vector<char> &)> callback);
 
 protected:
 
@@ -26,7 +26,7 @@ private:
 	nng_socket _socket;
 	std::string _url;
 
-	std::function<void(std::string, std::string&)> _callback;
+	std::function<void(const std::vector<char>, std::vector<char>&)> _callback;
 };
 
 #endif // REPLIER_HPP

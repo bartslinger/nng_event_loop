@@ -16,8 +16,10 @@ public:
 	~UdpSource();
 
 	int connect(std::string remote_ip, unsigned int remote_port, unsigned int local_port);
-	void set_receive_callback(std::function<void(std::string)> callback);
-	ssize_t send_packet(std::string packet);
+	void set_receive_callback(std::function<void(const std::vector<char>)> callback);
+	ssize_t send_packet(const char* message, ssize_t len);
+	ssize_t send_packet(const std::vector<char> message);
+	ssize_t send_packet(std::string message);
 
 protected:
 	void pollin_event();
@@ -27,7 +29,7 @@ private:
 	struct sockaddr_in _loc_addr;
 	uint8_t buf[BUFFER_LENGTH];
 
-	std::function<void(std::string)> _callback;
+	std::function<void(const std::vector<char>)> _callback;
 };
 
 #endif // UDP_SOURCE_HPP

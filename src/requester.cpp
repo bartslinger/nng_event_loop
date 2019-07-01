@@ -49,7 +49,7 @@ Requester::~Requester()
 
 }
 
-void Requester::request(std::string &request)
+void Requester::request(const char *message, uint16_t len)
 {
 	if (_request_busy) {
 		std::cerr << "Another request still in progress" << std::endl;
@@ -57,14 +57,23 @@ void Requester::request(std::string &request)
 	}
 	nng_msg *msg;
 	nng_msg_alloc(&msg, 0);
-	nng_msg_append(msg, request.c_str(), request.length());
+	nng_msg_append(msg, message, len);
 	nng_sendmsg(_socket, msg, NNG_FLAG_NONBLOCK);
 
 	_request_busy = true;
-
 }
 
-void Requester::set_receive_callback(std::function<void (std::string)> callback)
+void Requester::request(const std::vector<char> &message)
+{
+	request(message.data(), message.size());
+}
+
+void Requester::request(std::string &message)
+{
+	request(message.c_str(), message.length());
+}
+
+void Requester::set_receive_callback(std::function<void(const std::vector<char>)> callback)
 {
 	_callback = callback;
 }
@@ -74,7 +83,7 @@ void Requester::pollin_event()
 	// handle the reply
 	nng_msg *msg;
 	nng_recvmsg(_socket, &msg, 0);
-	std::string message((char*)nng_msg_body(msg), (char*)nng_msg_body(msg) + nng_msg_len(msg));
+	std::vector<char> message((char*)nng_msg_body(msg), (char*)nng_msg_body(msg) + nng_msg_len(msg));
 
 	// free the message
 	nng_msg_free(msg);

@@ -19,10 +19,20 @@ Publisher::~Publisher()
 
 }
 
-void Publisher::publish(std::string &message)
+void Publisher::publish(const char *message, uint16_t len)
 {
 	nng_msg *msg;
 	nng_msg_alloc(&msg, 0);
-	nng_msg_append(msg, message.c_str(), message.length());
+	nng_msg_append(msg, message, len);
 	nng_sendmsg(_socket, msg, 0);
+}
+
+void Publisher::publish(const std::vector<char> &message)
+{
+	publish(message.data(), message.size());
+}
+
+void Publisher::publish(const std::string &message)
+{
+	publish(message.c_str(), message.length());
 }

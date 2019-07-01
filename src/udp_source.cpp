@@ -37,15 +37,25 @@ int UdpSource::connect(std::string remote_ip, unsigned int remote_port, unsigned
 	_uav_addr.sin_port = htons(remote_port);
 }
 
-void UdpSource::set_receive_callback(std::function<void (std::string)> callback)
+void UdpSource::set_receive_callback(std::function<void (const std::vector<char>)> callback)
 {
 	_callback = callback;
 }
 
-ssize_t UdpSource::send_packet(std::string packet)
+ssize_t UdpSource::send_packet(const char *message, ssize_t len)
 {
-	ssize_t bytes_sent = sendto(_fd, packet.c_str(), packet.length(), 0, (struct sockaddr*)&_uav_addr, sizeof(struct sockaddr_in));
+	ssize_t bytes_sent = sendto(_fd, message, len, 0, (struct sockaddr*)&_uav_addr, sizeof(struct sockaddr_in));
 	return bytes_sent;
+}
+
+ssize_t UdpSource::send_packet(const std::vector<char> message)
+{
+	return send_packet(message.data(), message.size());
+}
+
+ssize_t UdpSource::send_packet(std::string message)
+{
+	return send_packet(message.c_str(), message.length());
 }
 
 void UdpSource::pollin_event()
@@ -53,7 +63,7 @@ void UdpSource::pollin_event()
 	ssize_t recv_size = recv(_fd, (void *)buf, BUFFER_LENGTH, 0);
 	if (recv_size > 0) {
 		// std::cout << "received " << std::to_string(recv_size) << " bytes" << std::endl;
-		std::string packet((char*)buf, recv_size);
+		std::vector<char> packet((char*)buf, (char*)buf + recv_size);
 
 		if (_callback == nullptr) {
 			std::cout << "Received bytes but no callback defined" << std::endl;

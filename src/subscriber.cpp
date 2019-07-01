@@ -51,7 +51,7 @@ int Subscriber::subscribe(std::string url)
 	return 0;
 }
 
-void Subscriber::set_receive_callback(std::function<void (std::string)> callback)
+void Subscriber::set_receive_callback(std::function<void (const std::vector<char>)> callback)
 {
 	_callback = callback;
 }
@@ -60,7 +60,7 @@ void Subscriber::pollin_event()
 {
 	nng_msg *msg;
 	nng_recvmsg(_socket, &msg, 0);
-	std::string message((char*)nng_msg_body(msg), (char*)nng_msg_body(msg) + nng_msg_len(msg));
+	std::vector<char> message((char*)nng_msg_body(msg), (char*)nng_msg_body(msg) + nng_msg_len(msg));
 
 	// free the message
 	nng_msg_free(msg);

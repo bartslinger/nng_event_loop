@@ -23,7 +23,7 @@ public:
 		static int i = 0;
 		std::cout << "Pub" << std::endl;
 		std::string data = std::to_string(i++);
-		_periodic_pub.publish(data);
+		_periodic_pub.publish(data.c_str(), data.length());
 	}
 
 private:
