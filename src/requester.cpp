@@ -68,7 +68,7 @@ void Requester::request(const std::vector<char> &message)
 	request(message.data(), message.size());
 }
 
-void Requester::request(std::string &message)
+void Requester::request(const std::string &message)
 {
 	request(message.c_str(), message.length());
 }

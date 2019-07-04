@@ -17,7 +17,7 @@ public:
 
 	void request(const char* message, uint16_t len);
 	void request(const std::vector<char> &message);
-	void request(std::string &message);
+	void request(const std::string &message);
 	void set_receive_callback(std::function<void(const std::vector<char>)> callback);
 
 protected:
