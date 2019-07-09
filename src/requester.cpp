@@ -53,7 +53,7 @@ void Requester::request(const char *message, uint16_t len)
 {
 	if (_request_busy) {
 		std::cerr << "Another request still in progress" << std::endl;
-		return;
+		//return;
 	}
 	nng_msg *msg;
 	nng_msg_alloc(&msg, 0);
